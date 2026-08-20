@@ -29,9 +29,7 @@ ANTES DE EMPEZAR
   PASO 1 — CREAR DASHBOARD
 ═══════════════════════════════════════════════════════════════════════
 
-gcloud monitoring dashboards create \
-  --config-from-file=dashboard.json \
-  --project=cicdtraining-498421
+gcloud monitoring dashboards create --config-from-file=dashboard.json --project=maestria-devops-505323
 
   ✎ NOTA: Crea el dashboard con 4 widgets en Cloud Monitoring:
            error rate · latencia p95 · disponibilidad · instancias activas.
@@ -42,35 +40,28 @@ gcloud monitoring dashboards create \
 ═══════════════════════════════════════════════════════════════════════
 
   ── Alerta 1: Error Rate > 0.5% por 2 minutos ──
-gcloud monitoring policies create \
-  --policy-from-file=alert-errors.json \
-  --project=cicdtraining-498421
+gcloud monitoring policies create --policy-from-file=alert-errors.json --project=maestria-devops-505323
 
-  ✎ NOTA: ID resultante → 11182487088173636770
+  ✎ NOTA: ID resultante → 8647033929796589313
            Condición: tasa de errores HTTP supera 0.5% sostenido 2 min.
            SLO asociado: Availability ≥ 99.5%
 
   ── Alerta 2: Latencia p95 > 500ms por 2 minutos ──
-gcloud monitoring policies create \
-  --policy-from-file=alert-latency.json \
-  --project=cicdtraining-498421
+gcloud monitoring policies create --policy-from-file=alert-latency.json --project=maestria-devops-505323
 
-  ✎ NOTA: ID resultante → 6022321838366663113
+  ✎ NOTA: ID resultante → 322150830734085122
            Condición: percentil 95 de latencia supera 500ms sostenido 2 min.
            SLO asociado: Latencia p95 < 500ms
 
   ── Alerta 3: Availability < 99.5% por 5 minutos ──
-gcloud monitoring policies create \
-  --policy-from-file=alert-availability.json \
-  --project=cicdtraining-498421
+gcloud monitoring policies create --policy-from-file=alert-availability.json --project=maestria-devops-505323
 
   ✎ NOTA: ID resultante → 6022321838366666603
            Condición: porcentaje de respuestas 2xx cae bajo 99.5% por 5 min.
            SLO asociado: Error rate ≤ 0.5%
 
   ── Verificar las 3 alertas creadas ──
-gcloud monitoring policies list \
-  --project=cicdtraining-498421
+gcloud monitoring policies list --project=cicdtraining-498421
 
   ✎ NOTA: Confirmar que las 3 aparecen con enabled: true
            Si alguna falta, repetir el comando create correspondiente.
@@ -79,44 +70,32 @@ gcloud monitoring policies list \
   PASO 3 — CREAR CANAL DE NOTIFICACIÓN (EMAIL)
 ═══════════════════════════════════════════════════════════════════════
 
-gcloud beta monitoring channels create \
-  --display-name="Email Maria" \
-  --type=email \
-  --channel-labels=email_address=mfochoa@uniboyaca.edu.co \
-  --project=cicdtraining-498421
+gcloud beta monitoring channels create --display-name="Email Maria" --type=email --channel-labels=email_address=e.ramirez190@gmail.com   --project=maestria-devops-505323
 
-  ✎ NOTA: El ID resultante fue → 12416972205859688771
+  ✎ NOTA: El ID resultante fue → 638452305430792740
            Para estudiantes: cambiar el email por el suyo.
            El remitente del correo será: alerting-noreply@google.com
            IMPORTANTE: revisar carpeta SPAM la primera vez.
 
   ── Verificar el canal creado ──
-gcloud alpha monitoring channels list \
-  --project=cicdtraining-498421
+gcloud alpha monitoring channels list --project=maestria-devops-505323
 
   ✎ NOTA: Confirmar que enabled: true y que el email es correcto.
            Para enviar correo de prueba al canal:
-           gcloud alpha monitoring channels verify CHANNEL_ID \
-             --project=cicdtraining-498421
+           gcloud alpha monitoring channels verify 638452305430792740 --project=maestria-devops-505323
 
 ═══════════════════════════════════════════════════════════════════════
   PASO 4 — VINCULAR ALERTAS AL CANAL DE EMAIL
 ═══════════════════════════════════════════════════════════════════════
 
   ── Vincular alerta de errores ──
-gcloud monitoring policies update 11182487088173636770 \
-  --set-notification-channels=12416972205859688771 \
-  --project=cicdtraining-498421
+gcloud monitoring policies update 8647033929796589313 --set-notification-channels=638452305430792740 --project=maestria-devops-505323
 
   ── Vincular alerta de latencia ──
-gcloud monitoring policies update 6022321838366663113 \
-  --set-notification-channels=12416972205859688771 \
-  --project=cicdtraining-498421
+gcloud monitoring policies update 322150830734085122 --set-notification-channels=638452305430792740 --project=maestria-devops-505323
 
   ── Vincular alerta de availability ──
-gcloud monitoring policies update 6022321838366666603 \
-  --set-notification-channels=12416972205859688771 \
-  --project=cicdtraining-498421
+gcloud monitoring policies update 6022321838366666603 --set-notification-channels=638452305430792740 --project=maestria-devops-505323
 
   ✎ NOTA: Sin este paso las alertas se disparan pero nadie recibe el email.
            Es el error más común — siempre ejecutar los 3 update.
@@ -200,3 +179,4 @@ gcloud alpha monitoring incidents list \
 ═══════════════════════════════════════════════════════════════════════
   Universidad de la Sabana· github.com/mafeopa · 2026
 ═══════════════════════════════════════════════════════════════════════
+ 
